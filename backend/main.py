@@ -1,14 +1,18 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.db.database import engine, Base
 from app.core.config import settings
 
-# Import models so SQLAlchemy registers them before create_all runs
-import app.models  # noqa: F401 - this triggers models/__init__.py which imports Employee + Attendance
+# Step 1: import Base first
+from app.db.database import engine, Base
 
-# Auto-create tables on startup - no manual SQL or migrations needed
+# Step 2: import all models so Base knows about them before create_all
+from app.models.employee import Employee
+from app.models.attendance import Attendance
+
+# Step 3: now create tables - runs automatically on every startup
 Base.metadata.create_all(bind=engine)
 
+# Step 4: import routers after everything is set up
 from app.api.routes import employees, attendance
 
 app = FastAPI(
