@@ -169,3 +169,5 @@ Assumptions
 Single admin user, no authentication required
 Attendance can only be marked once per employee per day (editing is allowed)
 Free tier on Render may spin down after inactivity — first request may take ~30 seconds# HRMS
+# HRMS
+# HRMS
