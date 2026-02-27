@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { LayoutDashboard, Users, CalendarCheck, Briefcase, ChevronRight } from 'lucide-react'
+import { useGreeting } from '../hooks/useGreeting'
 
 const navItems = [
   { to: '/dashboard', label: 'Dashboard',  icon: LayoutDashboard },
@@ -8,6 +9,18 @@ const navItems = [
 ]
 
 export default function Sidebar() {
+  const { greeting } = useGreeting()
+
+  // Determine active color based on greeting
+  const getActiveColor = () => {
+    if (greeting.includes('Morning')) return 'rgb(143, 154, 179)' // #8f9ab3
+    if (greeting.includes('Afternoon')) return 'rgb(91, 102, 129)' // #5b6681
+    if (greeting.includes('Evening')) return 'rgb(49, 59, 82)' // #313b52
+    return 'rgb(143, 154, 179)'
+  }
+
+  const activeColor = getActiveColor()
+
   return (
     <aside className="w-64 bg-white border-r border-gray-100 flex flex-col h-screen sticky top-0">
 
@@ -37,10 +50,11 @@ export default function Sidebar() {
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ${
                     isActive
-                      ? 'bg-blue-600 text-white shadow-lg'
+                      ? 'text-white shadow-lg'
                       : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                   }`
                 }
+                style={({ isActive }) => isActive ? { backgroundColor: activeColor } : {}}
               >
                 {({ isActive }) => (
                   <>

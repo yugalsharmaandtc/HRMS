@@ -35,28 +35,38 @@ export default function Dashboard() {
     ? Math.round((stats.today_present / stats.total_employees) * 100)
     : 0
 
+  // Determine background color based on greeting
+  const getBackgroundColor = () => {
+    if (greeting.includes('Morning')) return '#8f9ab3'
+    if (greeting.includes('Afternoon')) return '#5b6681'
+    if (greeting.includes('Evening')) return '#313b52'
+    return '#8f9ab3'
+  }
+
   if (loading) return <PageLoader />
 
   return (
     <div className="p-6 space-y-6">
 
       {/* Greeting and Timer */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-8 text-white relative overflow-hidden">
+      <div className="rounded-2xl p-8 text-white relative overflow-hidden" style={{ backgroundColor: getBackgroundColor() }}>
         {/* Decorative background circles */}
         <div className="absolute right-0 top-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3 pointer-events-none" />
         <div className="absolute right-20 bottom-0 w-40 h-40 bg-white/5 rounded-full translate-y-1/2 pointer-events-none" />
 
-        <div className="relative flex items-center justify-between">
+        <div className="relative flex items-start justify-between gap-6">
           <div className="flex-1">
-            <h2 className="text-3xl font-bold mb-2">{greeting}, Welcome Back! 👋</h2>
-            <p className="text-blue-200 text-base font-medium">{dateTime}</p>
+            <h2 className="text-3xl font-bold mb-3">{greeting}, Welcome Back! 👋</h2>
+            <div className="flex items-center gap-2">
+              <Clock size={18} />
+              <p className="text-base font-medium">{dateTime}</p>
+            </div>
           </div>
           <button 
             onClick={fetchData} 
-            className="flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white px-6 py-3 rounded-xl transition-all duration-150 flex-shrink-0"
+            className="px-4 py-2 rounded-lg bg-white/20 hover:bg-white/30 text-white transition-all duration-150 flex-shrink-0"
           >
-            <Clock size={24} />
-            <RefreshCw size={24} />
+            <RefreshCw size={20} />
           </button>
         </div>
       </div>
