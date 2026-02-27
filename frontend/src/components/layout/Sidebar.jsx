@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { LayoutDashboard, Users, CalendarCheck, Briefcase, ChevronRight } from 'lucide-react'
-import { useGreeting } from '../hooks/useGreeting'
+import { useGreeting } from '../../hooks/useGreeting'
 
 const navItems = [
   { to: '/dashboard', label: 'Dashboard',  icon: LayoutDashboard },
