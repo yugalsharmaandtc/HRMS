@@ -6,7 +6,7 @@ DATABASE_URL: str = os.environ.get(
     "postgresql://postgres:postgres@localhost:5432/hrms"
 )
 
-# Fix Render giving postgres:// instead of postgresql://
+# change of postgres instead of postgresql
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 

@@ -21,7 +21,7 @@ export default function EmployeeForm({ employee, onSuccess, onCancel }) {
     phone:       '',
   })
 
-  // Fill form when editing
+  // Fill form when editing start
   useEffect(() => {
     if (employee) {
       setForm({
