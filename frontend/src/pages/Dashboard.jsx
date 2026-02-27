@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Users, CheckCircle, XCircle, TrendingUp, ArrowRight, RefreshCw } from 'lucide-react'
+import { Users, CheckCircle, XCircle, TrendingUp, ArrowRight, RefreshCw, Clock } from 'lucide-react'
 import { employeeAPI, attendanceAPI } from '../services/api'
 import { useGreeting } from '../hooks/useGreeting'
 import { PageLoader } from '../components/ui/Spinner'
@@ -9,9 +9,9 @@ import { format } from 'date-fns'
 export default function Dashboard() {
   const navigate = useNavigate()
   const { greeting, dateTime } = useGreeting()
-  const [stats,           setStats]           = useState(null)
-  const [recentEmployees, setRecentEmployees] = useState([])
-  const [loading,         setLoading]         = useState(true)
+  const [stats,       setStats]       = useState(null)
+  const [newJoinings, setNewJoinings] = useState([])
+  const [loading,     setLoading]     = useState(true)
 
   const fetchData = async () => {
     setLoading(true)
@@ -21,7 +21,7 @@ export default function Dashboard() {
         employeeAPI.getAll(),
       ])
       setStats(statsRes.data)
-      setRecentEmployees(empRes.data.slice(0, 5))
+      setNewJoinings(empRes.data.slice(0, 5))
     } catch {
       // API might be sleeping on free Render tier - show zero state
     } finally {
@@ -40,51 +40,32 @@ export default function Dashboard() {
   return (
     <div className="p-6 space-y-6">
 
-      {/* Page title */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Overview of your HR operations</p>
-        </div>
-        <button onClick={fetchData} className="btn-secondary text-sm">
-          <RefreshCw size={15} /> Refresh
-        </button>
-      </div>
-
-      {/* Welcome banner */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-6 text-white relative overflow-hidden">
+      {/* Greeting and Timer */}
+      <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-8 text-white relative overflow-hidden">
         {/* Decorative background circles */}
         <div className="absolute right-0 top-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3 pointer-events-none" />
         <div className="absolute right-20 bottom-0 w-40 h-40 bg-white/5 rounded-full translate-y-1/2 pointer-events-none" />
 
-        <div className="relative flex items-start justify-between">
-          <div>
-            <h2 className="text-2xl font-bold mb-1">{greeting}, Welcome Back! 👋</h2>
-            <p className="text-blue-200 text-sm font-medium">{dateTime}</p>
-
-            {/* Attendance progress bar */}
-            <div className="mt-5">
-              <p className="text-blue-200 text-xs font-semibold uppercase tracking-wider mb-2">
-                Today's Attendance
-              </p>
-              <div className="flex items-center gap-3">
-                <div className="flex-1 bg-white/20 rounded-full h-2 max-w-xs">
-                  <div
-                    className="h-2 bg-white rounded-full transition-all duration-700"
-                    style={{ width: `${attendanceRate}%` }}
-                  />
-                </div>
-                <span className="text-sm font-semibold">
-                  {stats?.today_present ?? 0} / {stats?.total_employees ?? 0}
-                </span>
-              </div>
-            </div>
+        <div className="relative flex items-center justify-between">
+          <div className="flex-1">
+            <h2 className="text-3xl font-bold mb-2">{greeting}, Welcome Back! 👋</h2>
+            <p className="text-blue-200 text-base font-medium">{dateTime}</p>
           </div>
+          <button 
+            onClick={fetchData} 
+            className="flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white px-6 py-3 rounded-xl transition-all duration-150 flex-shrink-0"
+          >
+            <Clock size={24} />
+            <RefreshCw size={24} />
+          </button>
+        </div>
+      </div>
 
-          <div className="text-right">
-            <p className="text-4xl font-bold">{attendanceRate}%</p>
-            <p className="text-blue-200 text-sm mt-1">Attendance Rate Today</p>
-          </div>
+      {/* Page title */}
+      <div className="flex items-center justify-between pt-4">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+          <p className="text-sm text-gray-500 mt-0.5">Overview of your HR operations</p>
         </div>
       </div>
 
@@ -123,10 +104,10 @@ export default function Dashboard() {
       {/* Bottom section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        {/* Recent employees list */}
+        {/* New Joinings list */}
         <div className="lg:col-span-2 card p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-gray-900">Recent Employees</h3>
+            <h3 className="font-semibold text-gray-900">New Joinings</h3>
             <button
               onClick={() => navigate('/employees')}
               className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
@@ -134,18 +115,21 @@ export default function Dashboard() {
               View all <ArrowRight size={14} />
             </button>
           </div>
-          {recentEmployees.length === 0 ? (
-            <p className="text-sm text-gray-400 text-center py-8">No employees yet</p>
+          {newJoinings.length === 0 ? (
+            <p className="text-sm text-gray-400 text-center py-8">No new joinings yet</p>
           ) : (
             <ul className="space-y-3">
-              {recentEmployees.map(emp => (
-                <li key={emp.id} className="flex items-center gap-3 py-2">
-                  <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold text-sm flex-shrink-0">
+              {newJoinings.map(emp => (
+                <li key={emp.id} className="flex items-center gap-3 py-2 border-b border-gray-100 last:border-b-0">
+                  <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold text-sm flex-shrink-0">
                     {emp.full_name.charAt(0).toUpperCase()}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-gray-900 truncate">{emp.full_name}</p>
                     <p className="text-xs text-gray-400">{emp.department} · {emp.employee_id}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded">New</p>
                   </div>
                 </li>
               ))}

@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, Users, CalendarCheck, Building2 } from 'lucide-react'
+import { LayoutDashboard, Users, CalendarCheck, Briefcase, ChevronRight } from 'lucide-react'
 
 const navItems = [
   { to: '/dashboard', label: 'Dashboard',  icon: LayoutDashboard },
@@ -15,7 +15,7 @@ export default function Sidebar() {
       <div className="p-6 border-b border-gray-100">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 bg-blue-600 rounded-lg flex items-center justify-center">
-            <Building2 size={18} className="text-white" />
+            <Briefcase size={18} className="text-white" />
           </div>
           <div>
             <p className="font-bold text-gray-900 leading-tight">HRMS</p>
@@ -37,17 +37,17 @@ export default function Sidebar() {
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ${
                     isActive
-                      ? 'bg-blue-50 text-blue-700'
+                      ? 'bg-blue-600 text-white shadow-lg'
                       : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                   }`
                 }
               >
                 {({ isActive }) => (
                   <>
-                    <Icon size={18} className={isActive ? 'text-blue-600' : 'text-gray-400'} />
+                    <Icon size={18} className={isActive ? 'text-white' : 'text-gray-400'} />
                     {label}
                     {isActive && (
-                      <span className="ml-auto w-1.5 h-1.5 rounded-full bg-blue-600" />
+                      <ChevronRight size={18} className="ml-auto text-white" />
                     )}
                   </>
                 )}

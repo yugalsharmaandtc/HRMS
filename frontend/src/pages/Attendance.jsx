@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { CalendarCheck, Plus, Pencil, Trash2, Filter } from 'lucide-react'
+import { CalendarCheck, Plus, Pencil, Trash2, Filter, CheckCircle, XCircle, TrendingUp } from 'lucide-react'
 import { employeeAPI, attendanceAPI } from '../services/api'
 import toast from 'react-hot-toast'
 import Modal from '../components/ui/Modal'
@@ -12,6 +12,7 @@ import { format } from 'date-fns'
 export default function Attendance() {
   const [records,       setRecords]       = useState([])
   const [employees,     setEmployees]     = useState([])
+  const [stats,         setStats]         = useState(null)
   const [loading,       setLoading]       = useState(true)
   const [filterEmployee, setFilterEmployee] = useState('')
   const [filterDate,    setFilterDate]    = useState('')
@@ -27,12 +28,14 @@ export default function Attendance() {
       if (filterEmployee) params.employee_id  = filterEmployee
       if (filterDate)     params.filter_date  = filterDate
 
-      const [attRes, empRes] = await Promise.all([
+      const [attRes, empRes, statsRes] = await Promise.all([
         attendanceAPI.getAll(params),
         employeeAPI.getAll(),
+        employeeAPI.getStats(),
       ])
       setRecords(attRes.data)
       setEmployees(empRes.data)
+      setStats(statsRes.data)
     } catch {
       toast.error('Failed to load attendance records')
     } finally {
@@ -58,8 +61,37 @@ export default function Attendance() {
 
   if (loading) return <PageLoader />
 
+  const attendanceRate = stats && stats.total_employees > 0
+    ? Math.round((stats.today_present / stats.total_employees) * 100)
+    : 0
+
   return (
     <div className="p-6 space-y-6">
+
+      {/* Today's Attendance Stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <StatCard
+          icon={<CheckCircle size={22} className="text-green-600" />}
+          bg="bg-green-50"
+          label="Present Today"
+          value={stats?.today_present ?? 0}
+          sub="Marked present"
+        />
+        <StatCard
+          icon={<XCircle size={22} className="text-red-500" />}
+          bg="bg-red-50"
+          label="Absent Today"
+          value={stats?.today_absent ?? 0}
+          sub="Marked absent"
+        />
+        <StatCard
+          icon={<TrendingUp size={22} className="text-orange-500" />}
+          bg="bg-orange-50"
+          label="Attendance Rate"
+          value={`${attendanceRate}%`}
+          sub="Today"
+        />
+      </div>
 
       {/* Header */}
       <div className="flex items-center justify-between">
@@ -233,6 +265,21 @@ export default function Attendance() {
           </div>
         </div>
       </Modal>
+    </div>
+  )
+}
+
+function StatCard({ icon, bg, label, value, sub }) {
+  return (
+    <div className="card p-5 flex items-center gap-4">
+      <div className={`${bg} w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0`}>
+        {icon}
+      </div>
+      <div>
+        <p className="text-2xl font-bold text-gray-900">{value}</p>
+        <p className="text-sm font-medium text-gray-700">{label}</p>
+        <p className="text-xs text-gray-400">{sub}</p>
+      </div>
     </div>
   )
 }
