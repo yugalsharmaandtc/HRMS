@@ -35,13 +35,22 @@ export default function Dashboard() {
     ? Math.round((stats.today_present / stats.total_employees) * 100)
     : 0
 
-  // Determine background color based on greeting
+  // Determine colors based on greeting
   const getBackgroundColor = () => {
     if (greeting.includes('Morning')) return '#8f9ab3'
     if (greeting.includes('Afternoon')) return '#5b6681'
     if (greeting.includes('Evening')) return '#313b52'
     return '#8f9ab3'
   }
+
+  const getButtonColor = () => {
+    if (greeting.includes('Morning')) return 'rgb(143, 154, 179)'
+    if (greeting.includes('Afternoon')) return 'rgb(91, 102, 129)'
+    if (greeting.includes('Evening')) return 'rgb(49, 59, 82)'
+    return 'rgb(143, 154, 179)'
+  }
+
+  const buttonBgColor = getButtonColor()
 
   if (loading) return <PageLoader />
 
@@ -139,7 +148,7 @@ export default function Dashboard() {
                     <p className="text-xs text-gray-400">{emp.department} · {emp.employee_id}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded">New</p>
+                    <p className="text-xs font-medium px-2 py-1 rounded text-white" style={{ backgroundColor: buttonBgColor }}>New</p>
                   </div>
                 </li>
               ))}
@@ -153,17 +162,17 @@ export default function Dashboard() {
           <div className="space-y-3">
             <QuickAction
               onClick={() => navigate('/employees')}
-              icon={<Users size={20} className="text-blue-600" />}
-              bg="bg-blue-50"
+              icon={<Users size={20} />}
               title="Manage Employees"
               desc="Add or view records"
+              color={buttonBgColor}
             />
             <QuickAction
               onClick={() => navigate('/attendance')}
-              icon={<CheckCircle size={20} className="text-green-600" />}
-              bg="bg-green-50"
+              icon={<CheckCircle size={20} />}
               title="Mark Attendance"
               desc="Track daily attendance"
+              color={buttonBgColor}
             />
           </div>
 
@@ -176,7 +185,7 @@ export default function Dashboard() {
                 {stats.departments.map(d => (
                   <li key={d.name} className="flex items-center justify-between text-sm">
                     <span className="text-gray-700">{d.name}</span>
-                    <span className="font-semibold text-blue-600">{d.count}</span>
+                    <span className="font-semibold" style={{ color: buttonBgColor }}>{d.count}</span>
                   </li>
                 ))}
               </ul>
@@ -203,20 +212,21 @@ function StatCard({ icon, bg, label, value, sub }) {
   )
 }
 
-function QuickAction({ onClick, icon, bg, title, desc }) {
+function QuickAction({ onClick, icon, title, desc, color }) {
   return (
     <button
       onClick={onClick}
-      className="w-full flex items-center gap-3 p-3.5 rounded-xl border border-gray-100 hover:border-blue-200 hover:bg-blue-50/50 transition-all text-left group"
+      className="w-full flex items-center gap-3 p-3.5 rounded-xl border transition-all text-left group"
+      style={{ borderColor: color, backgroundColor: `${color}08` }}
     >
-      <div className={`${bg} w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0`}>
-        {icon}
+      <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: color }}>
+        <div style={{ color: 'white' }}>{icon}</div>
       </div>
       <div className="flex-1">
         <p className="text-sm font-medium text-gray-900">{title}</p>
         <p className="text-xs text-gray-400">{desc}</p>
       </div>
-      <ArrowRight size={16} className="text-gray-300 group-hover:text-blue-500 transition-colors" />
+      <ArrowRight size={16} className="text-gray-300 group-hover:text-gray-400 transition-colors" style={{ color: color }} />
     </button>
   )
 }

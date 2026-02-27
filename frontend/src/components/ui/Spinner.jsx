@@ -7,7 +7,7 @@ export default function Spinner({ size = 'md' }) {
 
 export function PageLoader() {
   return (
-    <div className="flex items-center justify-center h-64">
+    <div className="flex items-center justify-center min-h-screen">
       <div className="flex flex-col items-center gap-3">
         <div
           className="w-10 h-10 border-t-blue-600 border-blue-200 rounded-full animate-spin"

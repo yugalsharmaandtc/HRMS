@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, Users, CalendarCheck, Briefcase, ChevronRight } from 'lucide-react'
+import { LayoutDashboard, Users, CalendarCheck, ChevronRight } from 'lucide-react'
 import { useGreeting } from '../../hooks/useGreeting'
 
 const navItems = [
@@ -27,12 +27,9 @@ export default function Sidebar() {
       {/* Logo */}
       <div className="p-6 border-b border-gray-100">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-blue-600 rounded-lg flex items-center justify-center">
-            <Briefcase size={18} className="text-white" />
-          </div>
+          <img src="/admin image.jpg" alt="HRMS Logo" className="w-9 h-9 rounded-lg object-cover" />
           <div>
             <p className="font-bold text-gray-900 leading-tight">HRMS</p>
-            <p className="text-xs text-gray-400 font-medium">PORTAL V2</p>
           </div>
         </div>
       </div>
@@ -79,7 +76,6 @@ export default function Sidebar() {
           </div>
           <div>
             <p className="text-sm font-medium text-gray-900">Admin</p>
-            <p className="text-xs text-gray-400">admin@hrms.com</p>
           </div>
         </div>
       </div>

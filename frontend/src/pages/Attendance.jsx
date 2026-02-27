@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { CalendarCheck, Plus, Pencil, Trash2, Filter, CheckCircle, XCircle, TrendingUp } from 'lucide-react'
 import { employeeAPI, attendanceAPI } from '../services/api'
+import { useGreeting } from '../hooks/useGreeting'
 import toast from 'react-hot-toast'
 import Modal from '../components/ui/Modal'
 import EmptyState from '../components/ui/EmptyState'
@@ -10,6 +11,7 @@ import AttendanceForm from '../components/attendance/AttendanceForm'
 import { format } from 'date-fns'
 
 export default function Attendance() {
+  const { greeting } = useGreeting()
   const [records,       setRecords]       = useState([])
   const [employees,     setEmployees]     = useState([])
   const [stats,         setStats]         = useState(null)
@@ -20,6 +22,13 @@ export default function Attendance() {
   const [editRecord,    setEditRecord]    = useState(null)
   const [deleteTarget,  setDeleteTarget]  = useState(null)
   const [deleteLoading, setDeleteLoading] = useState(false)
+
+  const getButtonColor = () => {
+    if (greeting.includes('Morning')) return 'rgb(143, 154, 179)'
+    if (greeting.includes('Afternoon')) return 'rgb(91, 102, 129)'
+    if (greeting.includes('Evening')) return 'rgb(49, 59, 82)'
+    return 'rgb(143, 154, 179)'
+  }
 
   const fetchAll = useCallback(async () => {
     setLoading(true)
@@ -103,7 +112,8 @@ export default function Attendance() {
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="btn-primary"
+          className="text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-all duration-150 hover:opacity-90"
+          style={{ backgroundColor: getButtonColor() }}
           disabled={employees.length === 0}
         >
           <Plus size={16} /> Mark Attendance

@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react'
-import { Users, Plus, Trash2, Pencil, Search, Mail, Phone, Briefcase } from 'lucide-react'
+import { Users, Plus, Trash2, Pencil, Search, Mail, Phone } from 'lucide-react'
 import { employeeAPI } from '../services/api'
 import toast from 'react-hot-toast'
+import { useGreeting } from '../hooks/useGreeting'
 import Modal from '../components/ui/Modal'
 import EmptyState from '../components/ui/EmptyState'
 import { PageLoader } from '../components/ui/Spinner'
 import EmployeeForm from '../components/employees/EmployeeForm'
 
 export default function Employees() {
+  const { greeting } = useGreeting()
   const [employees,    setEmployees]    = useState([])
   const [loading,      setLoading]      = useState(true)
   const [search,       setSearch]       = useState('')
@@ -15,6 +17,13 @@ export default function Employees() {
   const [editEmployee, setEditEmployee] = useState(null)
   const [deleteTarget, setDeleteTarget] = useState(null)
   const [deleteLoading, setDeleteLoading] = useState(false)
+
+  const getButtonColor = () => {
+    if (greeting.includes('Morning')) return 'rgb(143, 154, 179)'
+    if (greeting.includes('Afternoon')) return 'rgb(91, 102, 129)'
+    if (greeting.includes('Evening')) return 'rgb(49, 59, 82)'
+    return 'rgb(143, 154, 179)'
+  }
 
   const fetchEmployees = async () => {
     setLoading(true)
@@ -63,7 +72,11 @@ export default function Employees() {
           <h1 className="text-2xl font-bold text-gray-900">Employees</h1>
           <p className="text-sm text-gray-500 mt-0.5">{employees.length} total employees</p>
         </div>
-        <button onClick={() => setShowAddModal(true)} className="btn-primary">
+        <button 
+          onClick={() => setShowAddModal(true)}
+          className="text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-all duration-150 hover:opacity-90"
+          style={{ backgroundColor: getButtonColor() }}
+        >
           <Plus size={16} /> Add Employee
         </button>
       </div>
